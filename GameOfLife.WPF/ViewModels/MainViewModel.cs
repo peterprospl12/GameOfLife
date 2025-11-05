@@ -39,7 +39,7 @@ namespace GameOfLife.WPF.ViewModels
             this.simulationService = simulationService;
 
             Board = new Board();
-            Board.Initialize(100, 100);
+            Board.Initialize(300, 300);
 
             Rules = Rules.DefaultConway();
 

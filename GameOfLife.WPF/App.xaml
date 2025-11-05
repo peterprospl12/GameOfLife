@@ -9,6 +9,7 @@
             </ResourceDictionary.MergedDictionaries>
 
             <converters:CellStateToBrushConverter x:Key="CellStateToBrushConverter"/>
+            <converters:MultiplyConverter x:Key="MultiplyConverter"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

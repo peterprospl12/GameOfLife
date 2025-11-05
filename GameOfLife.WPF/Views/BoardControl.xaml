@@ -5,39 +5,62 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:converters="clr-namespace:GameOfLife.WPF.Converters"
              mc:Ignorable="d"
-             Loaded="OnLoaded">
-    <Viewbox Stretch="Uniform">
-        <Canvas x:Name="BoardCanvas" Background="LightGray" Width="{Binding Width}" Height="{Binding Height}"
-                MouseLeftButtonDown="OnCellClick">
-            <ItemsControl ItemsSource="{Binding VisibleCells}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <Canvas />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemContainerStyle>
-                    <Style TargetType="ContentPresenter">
-                        <Setter Property="Canvas.Left" Value="{Binding X}"/>
-                        <Setter Property="Canvas.Top" Value="{Binding Y}"/>
-                    </Style>
-                </ItemsControl.ItemContainerStyle>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Rectangle Width="1" Height="1" Fill="{Binding State, Converter={StaticResource CellStateToBrushConverter}}"
-                                   Stroke="Black" StrokeThickness="0.05">
-                            <Rectangle.Triggers>
-                                <EventTrigger RoutedEvent="Loaded">
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.5"/>
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </EventTrigger>
-                            </Rectangle.Triggers>
-                        </Rectangle>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </Canvas>
-    </Viewbox>
+             Loaded="OnLoaded"
+             SizeChanged="OnSizeChanged">
+    <Grid>
+        <ScrollViewer x:Name="ScrollViewer"
+                      HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Auto"
+                      PreviewMouseWheel="OnMouseWheel"
+                      PreviewMouseLeftButtonDown="OnMouseLeftButtonDown"
+                      PreviewMouseMove="OnMouseMove"
+                      PreviewMouseLeftButtonUp="OnMouseLeftButtonUp"
+                      ScrollChanged="OnScrollChanged">
+            <Canvas x:Name="BoardCanvas" 
+                    Background="LightGray"
+                    Width="{Binding Width}"
+                    Height="{Binding Height}"
+                    MouseLeftButtonDown="OnCellClick">
+                <Canvas.LayoutTransform>
+                    <ScaleTransform ScaleX="{Binding ZoomLevel}" 
+                                    ScaleY="{Binding ZoomLevel}"/>
+                </Canvas.LayoutTransform>
+
+                <ItemsControl ItemsSource="{Binding VisibleCells}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemContainerStyle>
+                        <Style TargetType="ContentPresenter">
+                            <Setter Property="Canvas.Left" Value="{Binding X}"/>
+                            <Setter Property="Canvas.Top" Value="{Binding Y}"/>
+                        </Style>
+                    </ItemsControl.ItemContainerStyle>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Rectangle Width="1" Height="1" 
+                                       Fill="{Binding State, Converter={StaticResource CellStateToBrushConverter}}"
+                                       Stroke="Black" StrokeThickness="0.05"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Canvas>
+        </ScrollViewer>
+
+        <!-- Kontrolki zoom w rogu -->
+        <StackPanel VerticalAlignment="Bottom" 
+                    HorizontalAlignment="Right" 
+                    Margin="10"
+                    Orientation="Horizontal"
+                    Background="#80FFFFFF">
+            <Button Content="+" Command="{Binding ZoomInCommand}" 
+                    Width="30" Height="30" Margin="2"/>
+            <Button Content="-" Command="{Binding ZoomOutCommand}" 
+                    Width="30" Height="30" Margin="2"/>
+            <Button Content="Reset" Command="{Binding ResetZoomCommand}" 
+                    Height="30" Margin="2" Padding="5,0"/>
+        </StackPanel>
+    </Grid>
 </UserControl>

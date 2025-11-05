@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows;
-using GameOfLife.Core.Services; 
+using GameOfLife.Core.Services;
 using GameOfLife.WPF.ViewModels;
 using GameOfLife.WPF.Views;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,35 +24,27 @@ namespace GameOfLife.WPF
 
         protected override async void OnStartup(StartupEventArgs e)
         {
+            base.OnStartup(e);
             try
             {
                 await _host.StartAsync();
                 var mainWindow = _host.Services.GetRequiredService<MainWindow>();
                 mainWindow.Show();
-                base.OnStartup(e);
             }
             catch (Exception exception)
             {
-                MessageBox.Show($"Startup error: {exception.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"An unrecoverable error occurred during startup: {exception.Message}", "Startup Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 Shutdown();
             }
         }
 
         protected override async void OnExit(ExitEventArgs e)
         {
-            try
+            using (_host)
             {
-                await _host.StopAsync();
-                base.OnExit(e);
+                await _host.StopAsync(TimeSpan.FromSeconds(5)); // Allow 5 seconds for graceful shutdown
             }
-            catch (Exception exception)
-            {
-                MessageBox.Show($"Exit error: {exception.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            finally
-            {
-                _host.Dispose();
-            }
+            base.OnExit(e);
         }
     }
 }
