@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using GameOfLife.Core.Services;
 using GameOfLife.WPF.ViewModels;
 using GameOfLife.WPF.Views;

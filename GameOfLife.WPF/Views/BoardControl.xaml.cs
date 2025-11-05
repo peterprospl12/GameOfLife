@@ -1,5 +1,4 @@
 ﻿using GameOfLife.WPF.ViewModels;
-using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -43,8 +42,6 @@ namespace GameOfLife.WPF.Views
 
         private void InitializeBitmap()
         {
-            if (_viewModel == null) return;
-
             var board = _viewModel.GetBoard();
             _writeableBitmap = new WriteableBitmap(board.Width, board.Height, 96, 96, PixelFormats.Bgr32, null);
             BoardImage.Source = _writeableBitmap;
@@ -52,8 +49,6 @@ namespace GameOfLife.WPF.Views
 
         private void DrawBoard()
         {
-            if (_viewModel == null || _writeableBitmap == null) return;
-
             var board = _viewModel.GetBoard();
             var aliveCells = board.GetAliveCells();
 
@@ -75,7 +70,7 @@ namespace GameOfLife.WPF.Views
 
         private void OnCellClick(object sender, MouseButtonEventArgs e)
         {
-            if (_viewModel == null || !_viewModel.IsEditing || _isPanning) return;
+            if (!_viewModel.IsEditing || _isPanning) return;
 
             var position = e.GetPosition(BoardImage);
             var board = _viewModel.GetBoard();
@@ -134,12 +129,11 @@ namespace GameOfLife.WPF.Views
 
         private void OnPanMouseUp(object sender, MouseButtonEventArgs e)
         {
-            if (_isPanning && (e.ChangedButton == MouseButton.Middle || e.ChangedButton == MouseButton.Left))
-            {
-                _isPanning = false;
-                Cursor = Cursors.Arrow;
-                e.Handled = true;
-            }
+            if (!_isPanning || e.ChangedButton is not (MouseButton.Middle or MouseButton.Left)) return;
+
+            _isPanning = false;
+            Cursor = Cursors.Arrow;
+            e.Handled = true;
         }
 
         private void OnUnloaded(object sender, RoutedEventArgs e)

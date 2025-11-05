@@ -1,6 +1,4 @@
-﻿using GameOfLife.Core.Enums;
-using GameOfLife.Core.Models;
-using System.Diagnostics;
+﻿using GameOfLife.Core.Models;
 using System.Drawing;
 
 namespace GameOfLife.Core.Services

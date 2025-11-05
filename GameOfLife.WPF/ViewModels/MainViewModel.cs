@@ -2,7 +2,6 @@
 using CommunityToolkit.Mvvm.Input;
 using GameOfLife.Core.Models;
 using GameOfLife.Core.Services;
-using System;
 using System.Windows.Threading;
 
 namespace GameOfLife.WPF.ViewModels
@@ -10,33 +9,33 @@ namespace GameOfLife.WPF.ViewModels
     public partial class MainViewModel : ObservableObject
     {
         [ObservableProperty]
-        private Board board;
+        private Board _board;
 
         [ObservableProperty]
-        private Rules rules;
+        private Rules _rules;
 
         [ObservableProperty]
-        private Statistics statistics;
+        private Statistics _statistics;
 
         [ObservableProperty]
-        private bool isAnimating;
+        private bool _isAnimating;
 
         [ObservableProperty]
-        private bool isEditing;
+        private bool _isEditing;
 
         [ObservableProperty]
-        private double speed = 1.0;
+        private double _speed = 1.0;
 
         [ObservableProperty]
-        private BoardViewModel boardViewModel;
+        private BoardViewModel _boardViewModel;
 
-        private DispatcherTimer animationTimer;
+        private DispatcherTimer _animationTimer;
 
-        private readonly SimulationService simulationService;
+        private readonly SimulationService _simulationService;
 
         public MainViewModel(SimulationService simulationService)
         {
-            this.simulationService = simulationService;
+            this._simulationService = simulationService;
 
             Board = new Board();
             Board.Initialize(1000, 1000);
@@ -49,8 +48,8 @@ namespace GameOfLife.WPF.ViewModels
             IsEditing = true;
             IsAnimating = false;
 
-            animationTimer = new DispatcherTimer();
-            animationTimer.Tick += OnAnimationTick;
+            _animationTimer = new DispatcherTimer();
+            _animationTimer.Tick += OnAnimationTick;
             UpdateTimerInterval();
 
             Board.Randomize(0.3);
@@ -59,7 +58,7 @@ namespace GameOfLife.WPF.ViewModels
         [RelayCommand]
         private void Step()
         {
-            simulationService.NextGeneration(Board, Rules, Statistics);
+            _simulationService.NextGeneration(Board, Rules, Statistics);
         }
 
         [RelayCommand(CanExecute = nameof(CanStep))]
@@ -80,7 +79,7 @@ namespace GameOfLife.WPF.ViewModels
             {
                 IsAnimating = true;
                 IsEditing = false;
-                animationTimer.Start();
+                _animationTimer.Start();
             }
         }
 
@@ -89,7 +88,7 @@ namespace GameOfLife.WPF.ViewModels
         {
             if (IsAnimating)
             {
-                animationTimer.Stop();
+                _animationTimer.Stop();
                 IsAnimating = false;
                 IsEditing = true;
             }
@@ -154,7 +153,7 @@ namespace GameOfLife.WPF.ViewModels
         {
             if (Speed > 0)
             {
-                animationTimer.Interval = TimeSpan.FromMilliseconds(1000 / Speed);
+                _animationTimer.Interval = TimeSpan.FromMilliseconds(1000 / Speed);
             }
         }
 

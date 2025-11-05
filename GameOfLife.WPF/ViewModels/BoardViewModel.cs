@@ -2,7 +2,6 @@
 using CommunityToolkit.Mvvm.Input;
 using GameOfLife.Core.Enums;
 using GameOfLife.Core.Models;
-using System.ComponentModel;
 using System.Drawing;
 
 namespace GameOfLife.WPF.ViewModels
@@ -10,10 +9,10 @@ namespace GameOfLife.WPF.ViewModels
     public partial class BoardViewModel(Board board) : ObservableObject
     {
         [ObservableProperty]
-        private double zoomLevel = 1.0;
+        private double _zoomLevel = 1.0;
 
         [ObservableProperty]
-        private bool isEditing;
+        private bool _isEditing;
 
         public int Width => board.Width;
         public int Height => board.Height;
