@@ -89,7 +89,7 @@ namespace GameOfLife.Core.Models
             throw new NotImplementedException();
         }
 
-        private CellState GetCellState(Point point)
+        public CellState GetCellState(Point point)
         {
             return Cells.GetValueOrDefault(GetWrappedPoint(point), CellState.Dead);
         }
@@ -97,6 +97,11 @@ namespace GameOfLife.Core.Models
         public Point GetWrappedPoint(Point point)
         {
             return point.WrapToBoard(Width, Height);
+        }
+
+        public void Clear()
+        {
+            Cells.Clear();
         }
     }
 }

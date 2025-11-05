@@ -1,12 +1,38 @@
-﻿<Window x:Class="GameOfLife.WPF.MainWindow"
+﻿<Window x:Class="GameOfLife.WPF.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GameOfLife.WPF"
+        xmlns:views="clr-namespace:GameOfLife.WPF.Views"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
+        <StackPanel Grid.Row="0" Orientation="Vertical">
+            <StackPanel Orientation="Horizontal" Margin="5">
+                <Button Content="Step" Command="{Binding StepManualCommand}" Margin="2"/>
+                <Button Content="Start Animation" Command="{Binding StartAnimationCommand}" Margin="2"/>
+                <Button Content="Stop" Command="{Binding StopAnimationCommand}" Margin="2"/>
+                <Button Content="Randomize" Command="{Binding RandomizeCommand}" Margin="2"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="5">
+                <TextBlock Text="Speed:" VerticalAlignment="Center" Margin="2"/>
+                <Slider Value="{Binding Speed, Mode=TwoWay}" Minimum="0.1" Maximum="10" Width="200" Margin="2"/>
+            </StackPanel>
+            <TextBlock Margin="5">
+                <Run Text="Generation: "/><Run Text="{Binding Statistics.Generation, Mode=OneWay}"/>
+                <Run Text=" | Born: "/><Run Text="{Binding Statistics.Born, Mode=OneWay}"/>
+                <Run Text=" | Died: "/><Run Text="{Binding Statistics.Died, Mode=OneWay}"/>
+                <Run Text=" | Total Born: "/><Run Text="{Binding Statistics.TotalBorn, Mode=OneWay}"/>
+                <Run Text=" | Total Died: "/><Run Text="{Binding Statistics.TotalDied, Mode=OneWay}"/>
+            </TextBlock>
+        </StackPanel>
+
+        <views:BoardControl Grid.Row="1" DataContext="{Binding BoardViewModel}"/>
     </Grid>
 </Window>

@@ -4,9 +4,9 @@ using System.Drawing;
 
 namespace GameOfLife.Core.Services
 {
-    public static class SimulationService
+    public class SimulationService
     {
-        public static void NextGeneration(Board board, Rules rules, Statistics stats)
+        public void NextGeneration(Board board, Rules rules, Statistics stats)
         {
             var aliveCells = new List<Point>(board.GetAliveCells());
             var neighborCounts = new Dictionary<Point, int>();

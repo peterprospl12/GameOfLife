@@ -1,0 +1,20 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style TargetType="Button">
+        <Setter Property="Background" Value="LightBlue"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="Blue"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <!-- For rectangles in cells -->
+    <Style TargetType="Rectangle" x:Key="CellStyle">
+        <Setter Property="Fill" Value="Black"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding State}" Value="Dead">
+                <Setter Property="Fill" Value="Transparent"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+</ResourceDictionary>
