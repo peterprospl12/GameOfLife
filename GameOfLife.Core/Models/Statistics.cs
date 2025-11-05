@@ -5,40 +5,40 @@ namespace GameOfLife.Core.Models
 {
     public class Statistics : INotifyPropertyChanged
     {
-        private int generation = 0;
-        private int born = 0;
-        private int died = 0;
-        private int totalBorn = 0;
-        private int totalDied = 0;
+        private int _generation;
+        private int _born;
+        private int _died;
+        private int _totalBorn;
+        private int _totalDied;
 
         public int Generation
         {
-            get => generation;
-            private set => SetField(ref generation, value);
+            get => _generation;
+            private set => SetField(ref _generation, value);
         }
 
         public int Born
         {
-            get => born;
-            private set => SetField(ref born, value);
+            get => _born;
+            private set => SetField(ref _born, value);
         }
 
         public int Died
         {
-            get => died;
-            private set => SetField(ref died, value);
+            get => _died;
+            private set => SetField(ref _died, value);
         }
 
         public int TotalBorn
         {
-            get => totalBorn;
-            private set => SetField(ref totalBorn, value);
+            get => _totalBorn;
+            private set => SetField(ref _totalBorn, value);
         }
 
         public int TotalDied
         {
-            get => totalDied;
-            private set => SetField(ref totalDied, value);
+            get => _totalDied;
+            private set => SetField(ref _totalDied, value);
         }
 
         public void Reset()

@@ -8,7 +8,7 @@ namespace GameOfLife.Core.Models
     {
         public int Width { get; private set; }
         public int Height { get; private set; }
-        public Dictionary<Point, CellState> Cells { get; } = [];
+        public HashSet<Point> Cells { get; } = [];
 
         public void Initialize(int width, int height)
         {
@@ -22,19 +22,19 @@ namespace GameOfLife.Core.Models
             Cells.Clear();
         }
 
-        public void Update(Dictionary<Point, CellState> newCells)
+        public void Update(HashSet<Point> newCells)
         {
             Cells.Clear();
 
-            foreach (var kvp in newCells)
+            foreach (var point in newCells)
             {
-                Cells[kvp.Key] = kvp.Value;
+                Cells.Add(point);
             }
         }
 
         public bool IsAlive(Point point)
         {
-            return GetCellState(point) == CellState.Alive;
+            return Cells.Contains(point);
         }
 
         public void SetCell(Point point, CellState state)
@@ -47,7 +47,7 @@ namespace GameOfLife.Core.Models
             }
             else
             {
-                Cells[wrappedPoint] = state;
+                Cells.Add(wrappedPoint);
             }
         }
 
@@ -68,7 +68,7 @@ namespace GameOfLife.Core.Models
                 {
                     if (random.NextDouble() < density)
                     {
-                        Cells[new Point(x,y)] = CellState.Alive;
+                        Cells.Add(new Point(x,y));
                     }
                 }
             }
@@ -76,7 +76,7 @@ namespace GameOfLife.Core.Models
 
         public IEnumerable<Point> GetAliveCells()
         {
-            return Cells.Keys;
+            return Cells;
         }
 
         public void LoadFromFile(string filePath, Rules rules)
@@ -91,7 +91,7 @@ namespace GameOfLife.Core.Models
 
         public CellState GetCellState(Point point)
         {
-            return Cells.GetValueOrDefault(GetWrappedPoint(point), CellState.Dead);
+            return Cells.Contains(point) ? CellState.Alive : CellState.Dead;
         }
 
         public Point GetWrappedPoint(Point point)

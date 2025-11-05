@@ -1,5 +1,6 @@
 ﻿using GameOfLife.Core.Enums;
 using GameOfLife.Core.Models;
+using System.Diagnostics;
 using System.Drawing;
 
 namespace GameOfLife.Core.Services
@@ -8,10 +9,16 @@ namespace GameOfLife.Core.Services
     {
         public void NextGeneration(Board board, Rules rules, Statistics stats)
         {
-            var aliveCells = new List<Point>(board.GetAliveCells());
+            var initialAliveCells = board.GetAliveCells().ToHashSet();
+            if (initialAliveCells.Count == 0)
+            {
+                stats.Update(0, 0);
+                return;
+            }
+
             var neighborCounts = new Dictionary<Point, int>();
 
-            foreach (var cell in aliveCells)
+            foreach (var cell in initialAliveCells)
             {
                 for (var dx = -1; dx <= 1; dx++)
                 {
@@ -20,45 +27,37 @@ namespace GameOfLife.Core.Services
                         if (dx == 0 && dy == 0) continue;
 
                         var neighbour = new Point(cell.X + dx, cell.Y + dy);
-                        var wrappedNeighbour = board.GetWrappedPoint(neighbour); // Wrap
+                        var wrappedNeighbour = board.GetWrappedPoint(neighbour);
 
                         neighborCounts[wrappedNeighbour] = neighborCounts.GetValueOrDefault(wrappedNeighbour, 0) + 1;
                     }
                 }
             }
 
-            var newCells = new Dictionary<Point, CellState>();
-            var bornThisStep = 0;
-            var diedThisStep = 0;
-
-            foreach (var cell in aliveCells)
+            var nextAliveCells = new HashSet<Point>();
+            foreach (var (point, count) in neighborCounts)
             {
-                var neighbors = neighborCounts.GetValueOrDefault(cell, 0);
-                if (rules.ShouldSurvive(neighbors))
+                var isAlive = initialAliveCells.Contains(point);
+                if (isAlive)
                 {
-                    newCells[cell] = CellState.Alive;
+                    if (rules.ShouldSurvive(count))
+                    {
+                        nextAliveCells.Add(point);
+                    }
                 }
                 else
                 {
-                    diedThisStep++;
-                }
-            }
-
-            foreach (var candidate in neighborCounts.Keys)
-            {
-                if (!board.IsAlive(candidate))
-                {
-                    var neighbors = neighborCounts[candidate];
-
-                    if (rules.ShouldBeBorn(neighbors))
+                    if (rules.ShouldBeBorn(count))
                     {
-                        newCells[candidate] = CellState.Alive;
-                        bornThisStep++;
+                        nextAliveCells.Add(point);
                     }
                 }
             }
 
-            board.Update(newCells);
+            var bornThisStep = nextAliveCells.Count(p => !initialAliveCells.Contains(p));
+            var diedThisStep = initialAliveCells.Count(p => !nextAliveCells.Contains(p));
+
+            board.Update(nextAliveCells);
             stats.Update(bornThisStep, diedThisStep);
         }
     }
