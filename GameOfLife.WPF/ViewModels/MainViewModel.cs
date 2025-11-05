@@ -25,7 +25,7 @@ namespace GameOfLife.WPF.ViewModels
         private bool isEditing;
 
         [ObservableProperty]
-        private double speed = 1.0; 
+        private double speed = 1.0;
 
         [ObservableProperty]
         private BoardViewModel boardViewModel;
@@ -39,7 +39,7 @@ namespace GameOfLife.WPF.ViewModels
             this.simulationService = simulationService;
 
             Board = new Board();
-            Board.Initialize(300, 300);
+            Board.Initialize(1000, 1000);
 
             Rules = Rules.DefaultConway();
 
@@ -54,14 +54,12 @@ namespace GameOfLife.WPF.ViewModels
             UpdateTimerInterval();
 
             Board.Randomize(0.3);
-            BoardViewModel.UpdateVisibleCells();
         }
 
         [RelayCommand]
         private void Step()
         {
-            simulationService.NextGeneration(Board,Rules, Statistics);
-            BoardViewModel.UpdateVisibleCells();
+            simulationService.NextGeneration(Board, Rules, Statistics);
         }
 
         [RelayCommand(CanExecute = nameof(CanStep))]
@@ -104,7 +102,6 @@ namespace GameOfLife.WPF.ViewModels
             {
                 Board.Randomize(0.5);
                 Statistics.Reset();
-                BoardViewModel.UpdateVisibleCells();
             }
         }
 
@@ -115,7 +112,6 @@ namespace GameOfLife.WPF.ViewModels
             {
                 Board.Clear();
                 Statistics.Reset();
-                BoardViewModel.UpdateVisibleCells(); 
             }
         }
 
@@ -125,7 +121,6 @@ namespace GameOfLife.WPF.ViewModels
             if (!string.IsNullOrEmpty(filePath))
             {
                 Board.SaveToFile(filePath, Rules);
-                BoardViewModel.UpdateVisibleCells();
             }
         }
 
@@ -136,7 +131,6 @@ namespace GameOfLife.WPF.ViewModels
             {
                 Board.LoadFromFile(filePath, Rules);
                 Statistics.Reset();
-                BoardViewModel.UpdateVisibleCells(); 
             }
         }
 
