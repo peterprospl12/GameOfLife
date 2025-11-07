@@ -37,6 +37,11 @@ namespace GameOfLife.WPF.Views
                 _viewModel = vm;
                 InitializeBitmap();
                 _redrawTimer.Start();
+
+                if (ActualWidth > 0 && ActualHeight > 0)
+                {
+                    _viewModel.SetInitialZoom(ActualWidth, ActualHeight);
+                }
             }
         }
 
@@ -87,8 +92,6 @@ namespace GameOfLife.WPF.Views
 
         private void OnMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            if (_viewModel == null) return;
-
             var oldZoom = _viewModel.ZoomLevel;
             _viewModel.UpdateZoom(e.Delta);
 

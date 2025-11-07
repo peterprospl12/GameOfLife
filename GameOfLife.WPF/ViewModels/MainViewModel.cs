@@ -35,12 +35,15 @@ namespace GameOfLife.WPF.ViewModels
 
         public MainViewModel(SimulationService simulationService)
         {
-            this._simulationService = simulationService;
+            _simulationService = simulationService;
+        }
 
+        public void Initialize(int width, int height, string ruleString)
+        {
             Board = new Board();
-            Board.Initialize(1000, 1000);
+            Board.Initialize(width, height);
 
-            Rules = Rules.DefaultConway();
+            Rules = new Rules(ruleString);
 
             Statistics = new Statistics();
             BoardViewModel = new BoardViewModel(Board);

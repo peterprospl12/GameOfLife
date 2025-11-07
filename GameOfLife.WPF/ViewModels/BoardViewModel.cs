@@ -19,6 +19,25 @@ namespace GameOfLife.WPF.ViewModels
 
         public Board GetBoard() => board;
 
+        public void SetInitialZoom(double viewWidth, double viewHeight)
+        {
+            if (board.Width == 0 || board.Height == 0)
+            {
+                ZoomLevel = 1.0;
+                return;
+            }
+
+            const double cellWidth = 1.0;
+            const double cellHeight = 1.0;
+            
+            const double margin = 0.9;
+
+            double zoomX = (viewWidth * margin) / (board.Width * cellWidth);
+            double zoomY = (viewHeight * margin) / (board.Height * cellHeight);
+
+            ZoomLevel = Math.Min(zoomX, zoomY);
+        }
+
         public void UpdateZoom(double delta)
         {
             if (delta > 0)

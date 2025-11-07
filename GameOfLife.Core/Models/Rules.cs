@@ -1,79 +1,45 @@
-﻿namespace GameOfLife.Core.Models
+﻿using System.Text.RegularExpressions;
+
+namespace GameOfLife.Core.Models
 {
     public class Rules
     {
-        public List<int> Birth { get; private set; }
-        public List<int> Survive { get; private set; }
+        public HashSet<int> Birth { get; } = [];
+        public HashSet<int> Survive { get; } = [];
 
         public Rules(string ruleString)
         {
-            Birth = [];
-            Survive = [];
-            ParseRuleString(ruleString);
+            Parse(ruleString);
         }
 
-        public bool ShouldBeBorn(int aliveNeighbors)
-        {
-            return Birth.Contains(aliveNeighbors);
-        }
-
-        public bool ShouldSurvive(int aliveNeighbors)
-        {
-            return Survive.Contains(aliveNeighbors);
-        }
-
-        public static Rules DefaultConway()
-        {
-            return new Rules("B3/S23");
-        }
-
-        private void ParseRuleString(string ruleString)
+        private void Parse(string ruleString)
         {
             if (string.IsNullOrWhiteSpace(ruleString))
             {
-                throw new ArgumentException("Rule string cannot be empty.", nameof(ruleString));
+                throw new ArgumentException("Rule string cannot be null or empty.", nameof(ruleString));
             }
 
-            var parts = ruleString.Split('/');
+            var match = Regex.Match(ruleString, @"^B([0-8]+)/S([0-8]+)$", RegexOptions.IgnoreCase);
 
-            if (parts.Length != 2 || !parts[0].StartsWith('B') || !parts[1].StartsWith('S'))
+            if (!match.Success)
             {
-                throw new ArgumentException("Invalid rule format. Expected 'B.../S...'", nameof(ruleString));
+                throw new ArgumentException("Invalid rule string format. Expected format: B.../S...", nameof(ruleString));
             }
 
-            if (parts.Length != 2) return;
-
-            var birthStr = parts[0][1..];
-            var surviveStr = parts[1][1..];
-
-            Birth = ParseDigits(birthStr);
-            Survive = ParseDigits(surviveStr);
-        }
-
-        private List<int> ParseDigits(string digitsStr)
-        {
-            var list = new List<int>();
-
-            foreach (var c in digitsStr)
+            foreach (var c in match.Groups[1].Value)
             {
-                if (!char.IsDigit(c))
-                {
-                    throw new ArgumentException($"Invalid character '{c}' in rule string. Only digits allowed after B/S.");
-                }
-
-                var digit = (int)char.GetNumericValue(c);
-                if (!list.Contains(digit)) // Unikalne, opcjonalnie
-                {
-                    list.Add(digit);
-                }
+                Birth.Add(c - '0');
             }
 
-            return list;
+            foreach (var c in match.Groups[2].Value)
+            {
+                Survive.Add(c - '0');
+            }
         }
 
-        public override string ToString()
-        {
-            return $"B{string.Join("", Birth.OrderBy(x => x))}/S{string.Join("", Survive.OrderBy(x => x))}";
-        }
+        public bool ShouldBeBorn(int neighbors) => Birth.Contains(neighbors);
+        public bool ShouldSurvive(int neighbors) => Survive.Contains(neighbors);
+
+        public static string DefaultConway() => new("B3/S23");
     }
 }

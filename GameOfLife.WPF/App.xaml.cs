@@ -18,21 +18,47 @@ namespace GameOfLife.WPF
                 services.AddSingleton<SimulationService>();
                 services.AddSingleton<MainViewModel>();
                 services.AddSingleton<MainWindow>();
+
+                services.AddTransient<InitializationViewModel>();
+                services.AddTransient<InitializationWindow>();
             }).Build();
         }
 
         protected override async void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            try
+            await _host.StartAsync();
+
+            var mainWindow = _host.Services.GetRequiredService<MainWindow>();
+            Application.Current.MainWindow = mainWindow;
+
+            var initViewModel = _host.Services.GetRequiredService<InitializationViewModel>();
+            var initWindow = _host.Services.GetRequiredService<InitializationWindow>();
+            initWindow.DataContext = initViewModel;
+
+            var dialogResult = initWindow.ShowDialog();
+
+            if (dialogResult == true)
             {
-                await _host.StartAsync();
-                var mainWindow = _host.Services.GetRequiredService<MainWindow>();
-                mainWindow.Show();
+                var mainViewModel = _host.Services.GetRequiredService<MainViewModel>();
+                try
+                {
+                    mainViewModel.Initialize(
+                        int.Parse(initViewModel.BoardWidth),
+                        int.Parse(initViewModel.BoardHeight),
+                        initViewModel.RuleString);
+
+                    mainWindow.WindowState = WindowState.Maximized;
+                    mainWindow.Show();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Initialization Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    Shutdown();
+                }
             }
-            catch (Exception exception)
+            else
             {
-                MessageBox.Show($"An unrecoverable error occurred during startup: {exception.Message}", "Startup Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 Shutdown();
             }
         }
@@ -41,7 +67,7 @@ namespace GameOfLife.WPF
         {
             using (_host)
             {
-                await _host.StopAsync(TimeSpan.FromSeconds(5)); // Allow 5 seconds for graceful shutdown
+                await _host.StopAsync(TimeSpan.FromSeconds(5));
             }
             base.OnExit(e);
         }
