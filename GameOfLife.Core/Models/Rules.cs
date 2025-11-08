@@ -6,9 +6,12 @@ namespace GameOfLife.Core.Models
     {
         public HashSet<int> Birth { get; } = [];
         public HashSet<int> Survive { get; } = [];
+        public string RuleString { get; private set; }
+
 
         public Rules(string ruleString)
         {
+            RuleString = ruleString;
             Parse(ruleString);
         }
 

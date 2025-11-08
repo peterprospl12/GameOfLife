@@ -28,11 +28,24 @@ namespace GameOfLife.WPF.Views
                 Interval = TimeSpan.FromMilliseconds(16) // ~60 FPS
             };
             _redrawTimer.Tick += (s, e) => DrawBoard();
+
+            Loaded += OnLoaded;
+            DataContextChanged += OnDataContextChanged;
+        }
+
+        private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            InitializeViewModel();
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            if (DataContext is BoardViewModel vm)
+            InitializeViewModel();
+        }
+
+        private void InitializeViewModel()
+        {
+            if (DataContext is BoardViewModel vm && vm != _viewModel)
             {
                 _viewModel = vm;
                 InitializeBitmap();

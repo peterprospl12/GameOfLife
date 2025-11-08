@@ -2,6 +2,8 @@
 using CommunityToolkit.Mvvm.Input;
 using GameOfLife.Core.Models;
 using GameOfLife.Core.Services;
+using Microsoft.Win32;
+using System.Windows;
 using System.Windows.Threading;
 
 namespace GameOfLife.WPF.ViewModels
@@ -32,10 +34,12 @@ namespace GameOfLife.WPF.ViewModels
         private DispatcherTimer _animationTimer;
 
         private readonly SimulationService _simulationService;
+        private readonly FileService _fileService;
 
-        public MainViewModel(SimulationService simulationService)
+        public MainViewModel(SimulationService simulationService, FileService fileService)
         {
             _simulationService = simulationService;
+            _fileService = fileService;
         }
 
         public void Initialize(int width, int height, string ruleString)
@@ -73,6 +77,54 @@ namespace GameOfLife.WPF.ViewModels
         private bool CanStep()
         {
             return !IsAnimating;
+        }
+
+        [RelayCommand(CanExecute = nameof(CanStep))]
+        private async Task SaveAsync()
+        {
+            var saveFileDialog = new SaveFileDialog
+            {
+                Filter = "JSON Files (*.json)|*.json|All files (*.*)|*.*",
+                DefaultExt = ".json"
+            };
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                try
+                {
+                    await _fileService.SaveStateAsync(saveFileDialog.FileName, Board, Rules, Statistics);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error saving file: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+        [RelayCommand(CanExecute = nameof(CanStep))]
+        private async Task LoadAsync()
+        {
+            var openFileDialog = new OpenFileDialog
+            {
+                Filter = "JSON Files (*.json)|*.json|All files (*.*)|*.*",
+                DefaultExt = ".json"
+            };
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                try
+                {
+                    var (board, rules, statistics) = await _fileService.LoadStateAsync(openFileDialog.FileName);
+                    Board = board;
+                    Rules = rules;
+                    Statistics = statistics;
+                    BoardViewModel = new BoardViewModel(board) { IsEditing = IsEditing };
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error loading file: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
         }
 
         [RelayCommand]
@@ -117,25 +169,6 @@ namespace GameOfLife.WPF.ViewModels
             }
         }
 
-        [RelayCommand]
-        private void Save(string filePath)
-        {
-            if (!string.IsNullOrEmpty(filePath))
-            {
-                Board.SaveToFile(filePath, Rules);
-            }
-        }
-
-        [RelayCommand]
-        private void Load(string filePath)
-        {
-            if (!string.IsNullOrEmpty(filePath))
-            {
-                Board.LoadFromFile(filePath, Rules);
-                Statistics.Reset();
-            }
-        }
-
         partial void OnSpeedChanged(double value)
         {
             UpdateTimerInterval();
@@ -145,11 +178,15 @@ namespace GameOfLife.WPF.ViewModels
         {
             BoardViewModel.IsEditing = value;
             StepManualCommand.NotifyCanExecuteChanged();
+            SaveCommand.NotifyCanExecuteChanged();
+            LoadCommand.NotifyCanExecuteChanged();
         }
 
         partial void OnIsAnimatingChanged(bool value)
         {
             StepManualCommand.NotifyCanExecuteChanged();
+            SaveCommand.NotifyCanExecuteChanged();
+            LoadCommand.NotifyCanExecuteChanged();
         }
 
         private void UpdateTimerInterval()

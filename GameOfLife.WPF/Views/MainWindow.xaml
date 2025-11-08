@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:GameOfLife.WPF"
         xmlns:views="clr-namespace:GameOfLife.WPF.Views"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Conway's Game of Life" Height="450" Width="800">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -16,9 +16,12 @@
         <StackPanel Grid.Row="0" Orientation="Vertical">
             <StackPanel Orientation="Horizontal" Margin="5">
                 <Button Content="Step" Command="{Binding StepManualCommand}" Margin="2"/>
-                <Button Content="Start Animation" Command="{Binding StartAnimationCommand}" Margin="2"/>
+                <Button Content="Start" Command="{Binding StartAnimationCommand}" Margin="2"/>
                 <Button Content="Stop" Command="{Binding StopAnimationCommand}" Margin="2"/>
                 <Button Content="Randomize" Command="{Binding RandomizeCommand}" Margin="2"/>
+                <Button Content="Clear" Command="{Binding ClearCommand}" Margin="2"/>
+                <Button Content="Save" Command="{Binding SaveCommand}" Margin="2"/>
+                <Button Content="Load" Command="{Binding LoadCommand}" Margin="2"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="5">
                 <TextBlock Text="Speed:" VerticalAlignment="Center" Margin="2"/>

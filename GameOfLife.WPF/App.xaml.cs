@@ -16,6 +16,7 @@ namespace GameOfLife.WPF
             _host = Host.CreateDefaultBuilder().ConfigureServices((context, services) =>
             {
                 services.AddSingleton<SimulationService>();
+                services.AddSingleton<FileService>();
                 services.AddSingleton<MainViewModel>();
                 services.AddSingleton<MainWindow>();
 
