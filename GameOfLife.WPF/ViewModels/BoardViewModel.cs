@@ -2,7 +2,6 @@
 using CommunityToolkit.Mvvm.Input;
 using GameOfLife.Core.Enums;
 using GameOfLife.Core.Models;
-using System.Drawing;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -17,7 +16,7 @@ namespace GameOfLife.WPF.ViewModels
         private Board _board;
 
         [ObservableProperty]
-        private double _zoomLevel = 1.0;
+        private double _zoomLevel = 8.0;
 
         [ObservableProperty]
         private bool _isEditing;
@@ -52,30 +51,11 @@ namespace GameOfLife.WPF.ViewModels
             Randomize(0.5);
         }
 
-        public void SetInitialZoom(double viewWidth, double viewHeight)
-        {
-            if (_board.Width == 0 || _board.Height == 0)
-            {
-                ZoomLevel = 1.0;
-                return;
-            }
-
-            const double cellWidth = 1.0;
-            const double cellHeight = 1.0;
-
-            const double margin = 0.9;
-
-            double zoomX = (viewWidth * margin) / (_board.Width * cellWidth);
-            double zoomY = (viewHeight * margin) / (_board.Height * cellHeight);
-
-            ZoomLevel = Math.Min(zoomX, zoomY);
-        }
-
         public void UpdateZoom(double delta)
         {
             if (delta > 0)
             {
-                ZoomLevel = Math.Min(ZoomLevel * 1.2, 30.0);
+                ZoomLevel = Math.Min(ZoomLevel * 1.2, 50.0);
             }
             else
             {

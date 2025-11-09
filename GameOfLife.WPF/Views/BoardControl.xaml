@@ -12,9 +12,10 @@
         <ScrollViewer x:Name="ScrollViewer" 
                       HorizontalScrollBarVisibility="Auto" 
                       VerticalScrollBarVisibility="Auto"
-                      PreviewMouseLeftButtonDown="OnPanMouseDown"
+                      PreviewMouseWheel="OnMouseWheel"
+                      PreviewMouseDown="OnPanMouseDown"
                       PreviewMouseMove="OnPanMouseMove"
-                      PreviewMouseLeftButtonUp="OnPanMouseUp">
+                      PreviewMouseUp="OnPanMouseUp">
             <Image x:Name="BoardImage" 
                    Stretch="None"
                    RenderOptions.BitmapScalingMode="NearestNeighbor"

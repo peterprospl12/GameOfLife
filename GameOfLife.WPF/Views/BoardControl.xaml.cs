@@ -76,11 +76,6 @@ namespace GameOfLife.WPF.Views
 
                 InitializeBitmap();
                 _redrawTimer.Start();
-
-                if (ActualWidth > 0 && ActualHeight > 0)
-                {
-                    _viewModel.SetInitialZoom(ActualWidth, ActualHeight);
-                }
             }
         }
 
