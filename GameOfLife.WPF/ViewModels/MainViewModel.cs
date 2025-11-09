@@ -4,8 +4,10 @@ using GameOfLife.Core.Enums;
 using GameOfLife.Core.Models;
 using GameOfLife.Core.Services;
 using Microsoft.Win32;
+using System.IO;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
 namespace GameOfLife.WPF.ViewModels
@@ -164,6 +166,34 @@ namespace GameOfLife.WPF.ViewModels
             {
                 BoardViewModel.Clear();
                 Statistics.Reset();
+            }
+        }
+
+        [RelayCommand]
+        private void SaveImage()
+        {
+            var saveFileDialog = new SaveFileDialog
+            {
+                Filter = "PNG Image|*.png",
+                Title = "Save an Image File",
+                FileName = "GameOfLife_Board.png"
+            };
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                if (!string.IsNullOrEmpty(saveFileDialog.FileName))
+                {
+                    // Używamy stałego rozmiaru komórki dla obrazu, np. 10x10 pikseli
+                    var bitmap = BoardViewModel.CreateBitmap(10);
+
+                    var encoder = new PngBitmapEncoder();
+                    encoder.Frames.Add(BitmapFrame.Create(bitmap));
+
+                    using (var stream = new FileStream(saveFileDialog.FileName, FileMode.Create))
+                    {
+                        encoder.Save(stream);
+                    }
+                }
             }
         }
 

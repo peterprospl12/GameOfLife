@@ -3,7 +3,11 @@ using CommunityToolkit.Mvvm.Input;
 using GameOfLife.Core.Enums;
 using GameOfLife.Core.Models;
 using System.Drawing;
+using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using Color = System.Windows.Media.Color;
+using Point = System.Drawing.Point;
 
 namespace GameOfLife.WPF.ViewModels
 {
@@ -97,6 +101,50 @@ namespace GameOfLife.WPF.ViewModels
         public void Clear()
         {
             _board.Clear();
+        }
+
+        public BitmapSource CreateBitmap(int cellSize)
+        {
+            int imageWidth = Width * cellSize;
+            int imageHeight = Height * cellSize;
+
+            var drawingVisual = new DrawingVisual();
+            using (DrawingContext dc = drawingVisual.RenderOpen())
+            {
+                var deadBrush = new SolidColorBrush(DeadColor);
+                var aliveBrush = new SolidColorBrush(AliveColor);
+                dc.DrawRectangle(deadBrush, null, new Rect(0, 0, imageWidth, imageHeight));
+
+                foreach (var cellPoint in _board.GetAliveCells())
+                {
+                    double x = cellPoint.X * cellSize;
+                    double y = cellPoint.Y * cellSize;
+
+                    switch (CellShape)
+                    {
+                        case CellShape.Square:
+                            dc.DrawRectangle(aliveBrush, null, new Rect(x, y, cellSize, cellSize));
+                            break;
+
+                        case CellShape.Triangle:
+                            var streamGeometry = new StreamGeometry();
+                            using (StreamGeometryContext sgc = streamGeometry.Open())
+                            {
+                                sgc.BeginFigure(new System.Windows.Point(x + cellSize / 2.0, y), true, true);
+                                sgc.LineTo(new System.Windows.Point(x, y + cellSize), true, false);
+                                sgc.LineTo(new System.Windows.Point(x + cellSize, y + cellSize), true, false);
+                            }
+                            streamGeometry.Freeze();
+                            dc.DrawGeometry(aliveBrush, null, streamGeometry);
+                            break;
+                    }
+                }
+            }
+
+            var bitmap = new RenderTargetBitmap(imageWidth, imageHeight, 96, 96, PixelFormats.Pbgra32);
+            bitmap.Render(drawingVisual);
+            bitmap.Freeze();
+            return bitmap;
         }
     }
 }

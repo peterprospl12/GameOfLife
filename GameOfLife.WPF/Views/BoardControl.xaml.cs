@@ -72,7 +72,7 @@ namespace GameOfLife.WPF.Views
 
                 _viewModel.PropertyChanged += OnViewModelPropertyChanged;
 
-                _cellSize = _cellShape == CellShape.Square ? 1 : 6;
+                _cellSize = _cellShape == CellShape.Square ? 1 : 7;
 
                 InitializeBitmap();
                 _redrawTimer.Start();
@@ -130,17 +130,28 @@ namespace GameOfLife.WPF.Views
                 _writeableBitmap.Unlock();
             }
         }
+
         private void DrawTriangle(int x, int y, int size, Color color)
         {
+            var center = size / 2;
+
             for (var row = 0; row < size; row++)
             {
-                var startX = x + row;
-                var endX = x + size - 1 - row;
-                for (var col = startX; col <= endX; col++)
+                var leftEdge = center - (row * 0.5);
+                var rightEdge = center + (row * 0.5);
+
+                for (var col = 0; col < size; col++)
                 {
-                    if (col >= 0 && col < _writeableBitmap.PixelWidth && (y + row) >= 0 && (y + row) < _writeableBitmap.PixelHeight)
+                    if (col >= leftEdge && col <= rightEdge)
                     {
-                        _writeableBitmap.SetPixel(col, y + row, color);
+                        var pixelX = x + col;
+                        var pixelY = y + row;
+
+                        if (pixelX >= 0 && pixelX < _writeableBitmap.PixelWidth &&
+                            pixelY >= 0 && pixelY < _writeableBitmap.PixelHeight)
+                        {
+                            _writeableBitmap.SetPixel(pixelX, pixelY, color);
+                        }
                     }
                 }
             }

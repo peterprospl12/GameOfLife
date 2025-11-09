@@ -22,6 +22,7 @@
                 <Button Content="Clear" Command="{Binding ClearCommand}" Margin="2"/>
                 <Button Content="Save" Command="{Binding SaveCommand}" Margin="2"/>
                 <Button Content="Load" Command="{Binding LoadCommand}" Margin="2"/>
+                <Button Content="Save Image" Command="{Binding SaveImageCommand}" Margin="2"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="5">
                 <TextBlock Text="Speed:" VerticalAlignment="Center" Margin="2"/>
@@ -36,7 +37,6 @@
             </TextBlock>
         </StackPanel>
 
-        <!-- Bind visual customization to BoardControl -->
         <views:BoardControl Grid.Row="1" DataContext="{Binding BoardViewModel}"/>
     </Grid>
 </Window>
