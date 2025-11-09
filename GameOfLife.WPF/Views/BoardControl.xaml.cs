@@ -84,12 +84,12 @@ namespace GameOfLife.WPF.Views
             var board = _viewModel.GetBoard;
             var bitmapWidth = board.Width * _cellSize;
             var bitmapHeight = board.Height * _cellSize;
-            
+
             _writeableBitmap = new WriteableBitmap(bitmapWidth, bitmapHeight, 96, 96, PixelFormats.Bgr32, null);
             BoardImage.Source = _writeableBitmap;
         }
 
-        private void DrawBoard()
+        private unsafe void DrawBoard()
         {
             var board = _viewModel.GetBoard;
             var aliveCells = board.GetAliveCells();
@@ -98,6 +98,10 @@ namespace GameOfLife.WPF.Views
             {
                 _writeableBitmap.Lock();
                 _writeableBitmap.Clear(_deadColor);
+
+                var backBuffer = (int*)_writeableBitmap.BackBuffer;
+                var stride = _writeableBitmap.BackBufferStride / 4;
+                var color = (_aliveColor.A << 24) | (_aliveColor.R << 16) | (_aliveColor.G << 8) | _aliveColor.B;
 
                 foreach (var cell in aliveCells)
                 {
@@ -109,16 +113,17 @@ namespace GameOfLife.WPF.Views
                         case CellShape.Square:
                             if (x >= 0 && x < _writeableBitmap.PixelWidth && y >= 0 && y < _writeableBitmap.PixelHeight)
                             {
-                                _writeableBitmap.SetPixel(x, y, _aliveColor);
+                                *(backBuffer + y * stride + x) = color;
                             }
                             break;
                         case CellShape.Triangle:
-                            DrawTriangle(x, y, _cellSize, _aliveColor);
+                            DrawTriangle(x, y, _cellSize, color, backBuffer, stride);
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
                 }
+                _writeableBitmap.AddDirtyRect(new Int32Rect(0, 0, _writeableBitmap.PixelWidth, _writeableBitmap.PixelHeight));
             }
             finally
             {
@@ -126,27 +131,30 @@ namespace GameOfLife.WPF.Views
             }
         }
 
-        private void DrawTriangle(int x, int y, int size, Color color)
+        private unsafe void DrawTriangle(int x, int y, int size, int color, int* backBuffer, int stride)
         {
             var center = size / 2;
+            var bitmapWidth = _writeableBitmap.PixelWidth;
+            var bitmapHeight = _writeableBitmap.PixelHeight;
 
             for (var row = 0; row < size; row++)
             {
+                var pixelY = y + row;
+                if (pixelY < 0 || pixelY >= bitmapHeight) continue;
+
                 var leftEdge = center - (row * 0.5);
                 var rightEdge = center + (row * 0.5);
 
-                for (var col = 0; col < size; col++)
-                {
-                    if (col >= leftEdge && col <= rightEdge)
-                    {
-                        var pixelX = x + col;
-                        var pixelY = y + row;
+                var startCol = (int)Math.Ceiling(leftEdge);
+                var endCol = (int)Math.Floor(rightEdge);
 
-                        if (pixelX >= 0 && pixelX < _writeableBitmap.PixelWidth &&
-                            pixelY >= 0 && pixelY < _writeableBitmap.PixelHeight)
-                        {
-                            _writeableBitmap.SetPixel(pixelX, pixelY, color);
-                        }
+                for (var col = startCol; col <= endCol; col++)
+                {
+                    var pixelX = x + col;
+
+                    if (pixelX >= 0 && pixelX < bitmapWidth)
+                    {
+                        *(backBuffer + pixelY * stride + pixelX) = color;
                     }
                 }
             }
