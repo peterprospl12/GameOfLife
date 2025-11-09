@@ -1,14 +1,12 @@
 ﻿using System.Windows;
-using GameOfLife.WPF.ViewModels;
 
 namespace GameOfLife.WPF.Views
 {
     public partial class InitializationWindow : Window
     {
-        public InitializationWindow(InitializationViewModel viewModel)
+        public InitializationWindow()
         {
             InitializeComponent();
-            DataContext = viewModel;
         }
 
         private void OkButton_Click(object sender, RoutedEventArgs e)

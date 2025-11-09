@@ -36,6 +36,7 @@
             </TextBlock>
         </StackPanel>
 
+        <!-- Bind visual customization to BoardControl -->
         <views:BoardControl Grid.Row="1" DataContext="{Binding BoardViewModel}"/>
     </Grid>
 </Window>

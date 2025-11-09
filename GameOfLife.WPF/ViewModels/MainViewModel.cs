@@ -1,18 +1,17 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using GameOfLife.Core.Enums;
 using GameOfLife.Core.Models;
 using GameOfLife.Core.Services;
 using Microsoft.Win32;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Threading;
 
 namespace GameOfLife.WPF.ViewModels
 {
     public partial class MainViewModel : ObservableObject
     {
-        [ObservableProperty]
-        private Board _board;
-
         [ObservableProperty]
         private Rules _rules;
 
@@ -42,30 +41,30 @@ namespace GameOfLife.WPF.ViewModels
             _fileService = fileService;
         }
 
-        public void Initialize(int width, int height, string ruleString)
+        public void Initialize(int width, int height, string ruleString, Color aliveColor, Color deadColor, CellShape shape)
         {
-            Board = new Board();
-            Board.Initialize(width, height);
-
             Rules = new Rules(ruleString);
 
             Statistics = new Statistics();
-            BoardViewModel = new BoardViewModel(Board);
-
+            BoardViewModel = new BoardViewModel(width, height)
+            {
+                AliveColor = aliveColor,
+                DeadColor = deadColor,
+                CellShape = shape,
+                IsEditing = true
+            };
             IsEditing = true;
             IsAnimating = false;
 
             _animationTimer = new DispatcherTimer();
             _animationTimer.Tick += OnAnimationTick;
             UpdateTimerInterval();
-
-            Board.Randomize(0.3);
         }
 
         [RelayCommand]
         private void Step()
         {
-            _simulationService.NextGeneration(Board, Rules, Statistics);
+            _simulationService.NextGeneration(BoardViewModel.GetBoard, Rules, Statistics);
         }
 
         [RelayCommand(CanExecute = nameof(CanStep))]
@@ -92,7 +91,7 @@ namespace GameOfLife.WPF.ViewModels
             {
                 try
                 {
-                    await _fileService.SaveStateAsync(saveFileDialog.FileName, Board, Rules, Statistics);
+                    await _fileService.SaveStateAsync(saveFileDialog.FileName, BoardViewModel.GetBoard, Rules, Statistics);
                 }
                 catch (Exception ex)
                 {
@@ -115,10 +114,9 @@ namespace GameOfLife.WPF.ViewModels
                 try
                 {
                     var (board, rules, statistics) = await _fileService.LoadStateAsync(openFileDialog.FileName);
-                    Board = board;
                     Rules = rules;
                     Statistics = statistics;
-                    BoardViewModel = new BoardViewModel(board) { IsEditing = IsEditing };
+                    BoardViewModel.Board = board;
                 }
                 catch (Exception ex)
                 {
@@ -154,7 +152,7 @@ namespace GameOfLife.WPF.ViewModels
         {
             if (IsEditing)
             {
-                Board.Randomize(0.5);
+                BoardViewModel.Randomize(0.5);
                 Statistics.Reset();
             }
         }
@@ -164,7 +162,7 @@ namespace GameOfLife.WPF.ViewModels
         {
             if (IsEditing)
             {
-                Board.Clear();
+                BoardViewModel.Clear();
                 Statistics.Reset();
             }
         }

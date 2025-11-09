@@ -1,9 +1,9 @@
-﻿using System.Windows;
-using GameOfLife.Core.Services;
+﻿using GameOfLife.Core.Services;
 using GameOfLife.WPF.ViewModels;
 using GameOfLife.WPF.Views;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Windows;
 
 namespace GameOfLife.WPF
 {
@@ -13,16 +13,17 @@ namespace GameOfLife.WPF
 
         public App()
         {
-            _host = Host.CreateDefaultBuilder().ConfigureServices((context, services) =>
-            {
-                services.AddSingleton<SimulationService>();
-                services.AddSingleton<FileService>();
-                services.AddSingleton<MainViewModel>();
-                services.AddSingleton<MainWindow>();
+            _host = Host.CreateDefaultBuilder()
+                .ConfigureServices((context, services) =>
+                {
+                    services.AddSingleton<SimulationService>();
+                    services.AddSingleton<FileService>();
+                    services.AddSingleton<MainViewModel>();
+                    services.AddSingleton<MainWindow>();
 
-                services.AddTransient<InitializationViewModel>();
-                services.AddTransient<InitializationWindow>();
-            }).Build();
+                    services.AddTransient<InitializationViewModel>();
+                    services.AddTransient<InitializationWindow>();
+                }).Build();
         }
 
         protected override async void OnStartup(StartupEventArgs e)
@@ -31,7 +32,7 @@ namespace GameOfLife.WPF
             await _host.StartAsync();
 
             var mainWindow = _host.Services.GetRequiredService<MainWindow>();
-            Application.Current.MainWindow = mainWindow;
+            Current.MainWindow = mainWindow;
 
             var initViewModel = _host.Services.GetRequiredService<InitializationViewModel>();
             var initWindow = _host.Services.GetRequiredService<InitializationWindow>();
@@ -47,14 +48,18 @@ namespace GameOfLife.WPF
                     mainViewModel.Initialize(
                         int.Parse(initViewModel.BoardWidth),
                         int.Parse(initViewModel.BoardHeight),
-                        initViewModel.RuleString);
+                        initViewModel.RuleString,
+                        initViewModel.GetAliveColor(),
+                        initViewModel.GetDeadColor(),
+                        initViewModel.GetShape());
 
                     mainWindow.WindowState = WindowState.Maximized;
                     mainWindow.Show();
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Initialization Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"Initialization Error: {ex.Message}", "Error",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
                     Shutdown();
                 }
             }

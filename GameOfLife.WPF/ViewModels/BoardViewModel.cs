@@ -3,25 +3,54 @@ using CommunityToolkit.Mvvm.Input;
 using GameOfLife.Core.Enums;
 using GameOfLife.Core.Models;
 using System.Drawing;
+using Color = System.Windows.Media.Color;
 
 namespace GameOfLife.WPF.ViewModels
 {
-    public partial class BoardViewModel(Board board) : ObservableObject
+    public partial class BoardViewModel : ObservableObject
     {
+        [ObservableProperty]
+        private Board _board;
+
         [ObservableProperty]
         private double _zoomLevel = 1.0;
 
         [ObservableProperty]
         private bool _isEditing;
 
-        public int Width => board.Width;
-        public int Height => board.Height;
+        [ObservableProperty]
+        private Color _aliveColor;
 
-        public Board GetBoard() => board;
+        [ObservableProperty]
+        private Color _deadColor;
+
+        [ObservableProperty]
+        private CellShape _cellShape;
+
+        public int Width => _board.Width;
+        public int Height => _board.Height;
+        public Board GetBoard => _board;
+
+        public BoardViewModel(Board board)
+        {
+            _board = board;
+        }
+
+        public BoardViewModel(int width, int height)
+        {
+            _board = new Board();
+            Initialize(width, height);
+        }
+
+        public void Initialize(int width, int height)
+        {
+            _board.Initialize(width, height);
+            Randomize(0.5);
+        }
 
         public void SetInitialZoom(double viewWidth, double viewHeight)
         {
-            if (board.Width == 0 || board.Height == 0)
+            if (_board.Width == 0 || _board.Height == 0)
             {
                 ZoomLevel = 1.0;
                 return;
@@ -29,11 +58,11 @@ namespace GameOfLife.WPF.ViewModels
 
             const double cellWidth = 1.0;
             const double cellHeight = 1.0;
-            
+
             const double margin = 0.9;
 
-            double zoomX = (viewWidth * margin) / (board.Width * cellWidth);
-            double zoomY = (viewHeight * margin) / (board.Height * cellHeight);
+            double zoomX = (viewWidth * margin) / (_board.Width * cellWidth);
+            double zoomY = (viewHeight * margin) / (_board.Height * cellHeight);
 
             ZoomLevel = Math.Min(zoomX, zoomY);
         }
@@ -55,9 +84,19 @@ namespace GameOfLife.WPF.ViewModels
         {
             if (IsEditing)
             {
-                var state = board.GetCellState(point);
-                board.SetCell(point, state == CellState.Alive ? CellState.Dead : CellState.Alive);
+                var state = _board.GetCellState(point);
+                _board.SetCell(point, state == CellState.Alive ? CellState.Dead : CellState.Alive);
             }
+        }
+
+        public void Randomize(double density)
+        {
+            _board.Randomize(density);
+        }
+
+        public void Clear()
+        {
+            _board.Clear();
         }
     }
 }

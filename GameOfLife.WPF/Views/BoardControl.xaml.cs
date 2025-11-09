@@ -1,10 +1,12 @@
-﻿using GameOfLife.WPF.ViewModels;
+﻿using System.ComponentModel;
+using GameOfLife.WPF.ViewModels;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using GameOfLife.Core.Enums;
 using Point = System.Drawing.Point;
 
 namespace GameOfLife.WPF.Views
@@ -14,8 +16,10 @@ namespace GameOfLife.WPF.Views
         private BoardViewModel _viewModel;
         private WriteableBitmap _writeableBitmap;
         private readonly DispatcherTimer _redrawTimer;
-        private readonly Color _aliveColor = Colors.Black;
-        private readonly Color _deadColor = Colors.LightGray;
+        private Color _aliveColor;
+        private Color _deadColor;
+        private CellShape _cellShape;
+        private int _cellSize;
 
         private bool _isPanning;
         private System.Windows.Point _panLastPoint;
@@ -43,11 +47,33 @@ namespace GameOfLife.WPF.Views
             InitializeViewModel();
         }
 
+        private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(BoardViewModel.Board))
+            {
+                InitializeBitmap();
+                DrawBoard();
+            }
+        }
+
         private void InitializeViewModel()
         {
             if (DataContext is BoardViewModel vm && vm != _viewModel)
             {
+                if (_viewModel != null)
+                {
+                    _viewModel.PropertyChanged -= OnViewModelPropertyChanged;
+                }
+
                 _viewModel = vm;
+                _aliveColor = vm.AliveColor;
+                _deadColor = vm.DeadColor;
+                _cellShape = vm.CellShape;
+
+                _viewModel.PropertyChanged += OnViewModelPropertyChanged;
+
+                _cellSize = _cellShape == CellShape.Square ? 1 : 6;
+
                 InitializeBitmap();
                 _redrawTimer.Start();
 
@@ -60,14 +86,17 @@ namespace GameOfLife.WPF.Views
 
         private void InitializeBitmap()
         {
-            var board = _viewModel.GetBoard();
-            _writeableBitmap = new WriteableBitmap(board.Width, board.Height, 96, 96, PixelFormats.Bgr32, null);
+            var board = _viewModel.GetBoard;
+            var bitmapWidth = board.Width * _cellSize;
+            var bitmapHeight = board.Height * _cellSize;
+            
+            _writeableBitmap = new WriteableBitmap(bitmapWidth, bitmapHeight, 96, 96, PixelFormats.Bgr32, null);
             BoardImage.Source = _writeableBitmap;
         }
 
         private void DrawBoard()
         {
-            var board = _viewModel.GetBoard();
+            var board = _viewModel.GetBoard;
             var aliveCells = board.GetAliveCells();
 
             try
@@ -77,12 +106,43 @@ namespace GameOfLife.WPF.Views
 
                 foreach (var cell in aliveCells)
                 {
-                    _writeableBitmap.SetPixel(cell.X, cell.Y, _aliveColor);
+                    var x = cell.X * _cellSize;
+                    var y = cell.Y * _cellSize;
+
+                    switch (_cellShape)
+                    {
+                        case CellShape.Square:
+                            if (x >= 0 && x < _writeableBitmap.PixelWidth && y >= 0 && y < _writeableBitmap.PixelHeight)
+                            {
+                                _writeableBitmap.SetPixel(x, y, _aliveColor);
+                            }
+                            break;
+                        case CellShape.Triangle:
+                            DrawTriangle(x, y, _cellSize, _aliveColor);
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
                 }
             }
             finally
             {
                 _writeableBitmap.Unlock();
+            }
+        }
+        private void DrawTriangle(int x, int y, int size, Color color)
+        {
+            for (var row = 0; row < size; row++)
+            {
+                var startX = x + row;
+                var endX = x + size - 1 - row;
+                for (var col = startX; col <= endX; col++)
+                {
+                    if (col >= 0 && col < _writeableBitmap.PixelWidth && (y + row) >= 0 && (y + row) < _writeableBitmap.PixelHeight)
+                    {
+                        _writeableBitmap.SetPixel(col, y + row, color);
+                    }
+                }
             }
         }
 
@@ -91,10 +151,10 @@ namespace GameOfLife.WPF.Views
             if (!_viewModel.IsEditing || _isPanning) return;
 
             var position = e.GetPosition(BoardImage);
-            var board = _viewModel.GetBoard();
+            var board = _viewModel.GetBoard;
 
-            var x = (int)position.X;
-            var y = (int)position.Y;
+            var x = (int)(position.X / _cellSize);
+            var y = (int)(position.Y / _cellSize);
 
             if (x >= 0 && x < board.Width && y >= 0 && y < board.Height)
             {
