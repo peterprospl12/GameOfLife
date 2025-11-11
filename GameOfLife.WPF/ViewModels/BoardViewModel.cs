@@ -30,9 +30,9 @@ namespace GameOfLife.WPF.ViewModels
         [ObservableProperty]
         private CellShape _cellShape;
 
-        public int Width => _board.Width;
-        public int Height => _board.Height;
-        public Board GetBoard => _board;
+        public int Width => Board.Width;
+        public int Height => Board.Height;
+        public Board GetBoard => Board;
 
         public BoardViewModel(Board board)
         {
@@ -47,7 +47,7 @@ namespace GameOfLife.WPF.ViewModels
 
         public void Initialize(int width, int height)
         {
-            _board.Initialize(width, height);
+            Board.Initialize(width, height);
             Randomize(0.4);
         }
 
@@ -82,19 +82,19 @@ namespace GameOfLife.WPF.ViewModels
         {
             if (IsEditing)
             {
-                var state = _board.GetCellState(point);
-                _board.SetCell(point, state == CellState.Alive ? CellState.Dead : CellState.Alive);
+                var state = Board.GetCellState(point);
+                Board.SetCell(point, state == CellState.Alive ? CellState.Dead : CellState.Alive);
             }
         }
 
         public void Randomize(double density)
         {
-            _board.Randomize(density);
+            Board.Randomize(density);
         }
 
         public void Clear()
         {
-            _board.Clear();
+            Board.Clear();
         }
 
         public BitmapSource CreateBitmap(int cellSize)
@@ -109,7 +109,7 @@ namespace GameOfLife.WPF.ViewModels
                 var aliveBrush = new SolidColorBrush(AliveColor);
                 dc.DrawRectangle(deadBrush, null, new Rect(0, 0, imageWidth, imageHeight));
 
-                foreach (var cellPoint in _board.GetAliveCells())
+                foreach (var cellPoint in Board.GetAliveCells())
                 {
                     double x = cellPoint.X * cellSize;
                     double y = cellPoint.Y * cellSize;
