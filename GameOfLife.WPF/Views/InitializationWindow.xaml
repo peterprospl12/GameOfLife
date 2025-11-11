@@ -3,70 +3,50 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:viewmodels="clr-namespace:GameOfLife.WPF.ViewModels"
-        xmlns:converters="clr-namespace:GameOfLife.WPF.Converters"
-        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
         Title="Game of Life - Setup" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen"
         WindowStyle="ToolWindow" ResizeMode="NoResize" Width="300">
     <Window.Resources>
-        <converters:MultiBooleanToBooleanConverter x:Key="MultiBooleanToBooleanConverter"/>
-        <ControlTemplate x:Key="ValidationErrorTemplate">
-            <StackPanel>
-                <AdornedElementPlaceholder x:Name="placeholder"/>
-                <TextBlock FontSize="11" FontStyle="Italic" Foreground="Red"
-                           Text="{Binding [0].ErrorContent}"/>
-            </StackPanel>
-        </ControlTemplate>
+        <Storyboard x:Key="FadeOutAnimation">
+            <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.3"/>
+        </Storyboard>
     </Window.Resources>
-    <StackPanel Margin="15" Width="260">
-        <TextBlock Text="Board Width:" FontWeight="Bold"/>
-        <TextBox x:Name="BoardWidthTextBox"
-                 Text="{Binding BoardWidth, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True, ValidatesOnExceptions=True}"
-                 Margin="0,0,0,10"
-                 Validation.ErrorTemplate="{StaticResource ValidationErrorTemplate}"/>
-        <TextBlock Text="Board Height:" FontWeight="Bold"/>
-        <TextBox x:Name="BoardHeightTextBox"
-                 Text="{Binding BoardHeight, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True, ValidatesOnExceptions=True}"
-                 Margin="0,0,0,10"
-                 Validation.ErrorTemplate="{StaticResource ValidationErrorTemplate}"/>
-        <TextBlock Text="Game Rules (e.g., B3/S23):" FontWeight="Bold"/>
-        <TextBox x:Name="RuleStringTextBox"
-                 Text="{Binding RuleString, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
-                 Margin="0,0,0,15"
-                 Validation.ErrorTemplate="{StaticResource ValidationErrorTemplate}"/>
-        <!-- Alive cell color -->
-        <TextBlock Text="Alive cells color:" FontWeight="Bold"/>
-        <xctk:ColorPicker Margin="0,2,0,10"
-                          SelectedColor="{Binding AliveColor}"
-                          DisplayColorAndName="True"
-                          ShowStandardColors="True"
-                          ShowAvailableColors="False"/>
 
-        <!-- Dead cell color -->
-        <TextBlock Text="Dead cells color:" FontWeight="Bold"/>
-        <xctk:ColorPicker Margin="0,2,0,10"
-                          SelectedColor="{Binding DeadColor}"
-                          DisplayColorAndName="True"
-                          ShowStandardColors="True"
-                          ShowAvailableColors="False"/>
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="Window.Loaded">
+            <BeginStoryboard>
+                <Storyboard>
+                    <DoubleAnimation
+                        Storyboard.TargetProperty="Opacity"
+                        From="0"
+                        To="1"
+                        Duration="0:0:0.5" />
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+    </Window.Triggers>
+
+    <StackPanel Margin="15" Width="260">
+        <ItemsControl ItemsSource="{Binding Settings}"/>
 
         <!-- Shape selection -->
-        <TextBlock Text="Shape of alive cells:" FontWeight="Bold"/>
+        <TextBlock Text="Shape of alive cells:" Style="{StaticResource LabelTextStyle}"/>
         <ComboBox Margin="0,0,0,15"
                   SelectedItem="{Binding SelectedCellShape}"
                   ItemsSource="{Binding AvailableShapes}"/>
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Content="Start" Width="75" IsDefault="True" Click="OkButton_Click" Margin="0,0,85,0">
-                <Button.IsEnabled>
-                    <MultiBinding Converter="{StaticResource MultiBooleanToBooleanConverter}">
-                        <Binding Path="HasErrors"/>
-                        <Binding ElementName="BoardWidthTextBox" Path="(Validation.HasError)"/>
-                        <Binding ElementName="BoardHeightTextBox" Path="(Validation.HasError)"/>
-                        <Binding ElementName="RuleStringTextBox" Path="(Validation.HasError)"/>
-                    </MultiBinding>
-                </Button.IsEnabled>
+                <Button.Style>
+                    <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                        <Setter Property="IsEnabled" Value="False"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding HasErrors}" Value="False">
+                                <Setter Property="IsEnabled" Value="True"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
             </Button>
             <Button Content="Cancel" Width="75" IsCancel="True" Click="CancelButton_Click"/>
         </StackPanel>

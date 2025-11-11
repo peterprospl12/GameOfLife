@@ -46,9 +46,9 @@ namespace GameOfLife.WPF
                 try
                 {
                     mainViewModel.Initialize(
-                        int.Parse(initViewModel.BoardWidth),
-                        int.Parse(initViewModel.BoardHeight),
-                        initViewModel.RuleString,
+                        initViewModel.GetWidth(),
+                        initViewModel.GetHeight(),
+                        initViewModel.GetRuleString(),
                         initViewModel.GetAliveColor(),
                         initViewModel.GetDeadColor(),
                         initViewModel.GetShape());

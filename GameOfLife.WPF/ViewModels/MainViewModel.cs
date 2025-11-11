@@ -127,7 +127,7 @@ namespace GameOfLife.WPF.ViewModels
             }
         }
 
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof(CanStep))]
         private void StartAnimation()
         {
             if (!IsAnimating)
@@ -149,7 +149,7 @@ namespace GameOfLife.WPF.ViewModels
             }
         }
 
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof(CanStep))]
         private void Randomize()
         {
             if (IsEditing)
@@ -159,7 +159,7 @@ namespace GameOfLife.WPF.ViewModels
             }
         }
 
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof(CanStep))]
         private void Clear()
         {
             if (IsEditing)
@@ -169,7 +169,7 @@ namespace GameOfLife.WPF.ViewModels
             }
         }
 
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof(CanStep))]
         private void SaveImage()
         {
             var saveFileDialog = new SaveFileDialog
@@ -183,7 +183,6 @@ namespace GameOfLife.WPF.ViewModels
             {
                 if (!string.IsNullOrEmpty(saveFileDialog.FileName))
                 {
-                    // Używamy stałego rozmiaru komórki dla obrazu, np. 10x10 pikseli
                     var bitmap = BoardViewModel.CreateBitmap(10);
 
                     var encoder = new PngBitmapEncoder();
@@ -205,13 +204,20 @@ namespace GameOfLife.WPF.ViewModels
         partial void OnIsEditingChanged(bool value)
         {
             BoardViewModel.IsEditing = value;
-            StepManualCommand.NotifyCanExecuteChanged();
-            SaveCommand.NotifyCanExecuteChanged();
-            LoadCommand.NotifyCanExecuteChanged();
+            UpdateCommandStates();
         }
 
         partial void OnIsAnimatingChanged(bool value)
         {
+            UpdateCommandStates();
+        }
+
+        private void UpdateCommandStates()
+        {
+            StartAnimationCommand.NotifyCanExecuteChanged();
+            SaveImageCommand.NotifyCanExecuteChanged();
+            ClearCommand.NotifyCanExecuteChanged();
+            RandomizeCommand.NotifyCanExecuteChanged();
             StepManualCommand.NotifyCanExecuteChanged();
             SaveCommand.NotifyCanExecuteChanged();
             LoadCommand.NotifyCanExecuteChanged();

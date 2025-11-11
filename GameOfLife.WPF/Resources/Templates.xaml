@@ -1,5 +1,34 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:viewmodels="clr-namespace:GameOfLife.WPF.ViewModels"
+                    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
 
+    <ControlTemplate x:Key="ValidationErrorTemplate">
+        <StackPanel>
+            <AdornedElementPlaceholder x:Name="placeholder"/>
+            <TextBlock FontSize="11" FontStyle="Italic" Foreground="Red"
+                       Text="{Binding [0].ErrorContent}"/>
+        </StackPanel>
+    </ControlTemplate>
+
+    <DataTemplate DataType="{x:Type viewmodels:ColorSettingViewModel}">
+        <StackPanel>
+            <TextBlock Text="{Binding Label}" Style="{StaticResource LabelTextStyle}"/>
+            <xctk:ColorPicker Margin="0,2,0,10"
+                              SelectedColor="{Binding SelectedColor}"
+                              DisplayColorAndName="True"
+                              ShowStandardColors="True"
+                              ShowAvailableColors="False"/>
+        </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type viewmodels:TextFieldSettingViewModel}">
+        <StackPanel>
+            <TextBlock Text="{Binding Label}" Style="{StaticResource LabelTextStyle}"/>
+            <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
+                     Margin="0,0,0,10"
+                     Validation.ErrorTemplate="{StaticResource ValidationErrorTemplate}"/>
+        </StackPanel>
+    </DataTemplate>
 
 </ResourceDictionary>
