@@ -28,23 +28,24 @@ namespace GameOfLife.WPF
 
         protected override async void OnStartup(StartupEventArgs e)
         {
-            base.OnStartup(e);
-            await _host.StartAsync();
-
-            var mainWindow = _host.Services.GetRequiredService<MainWindow>();
-            Current.MainWindow = mainWindow;
-
-            var initViewModel = _host.Services.GetRequiredService<InitializationViewModel>();
-            var initWindow = _host.Services.GetRequiredService<InitializationWindow>();
-            initWindow.DataContext = initViewModel;
-
-            var dialogResult = initWindow.ShowDialog();
-
-            if (dialogResult == true)
+            try
             {
-                var mainViewModel = _host.Services.GetRequiredService<MainViewModel>();
-                try
+                base.OnStartup(e);
+                await _host.StartAsync();
+
+                var mainWindow = _host.Services.GetRequiredService<MainWindow>();
+                Current.MainWindow = mainWindow;
+
+                var initViewModel = _host.Services.GetRequiredService<InitializationViewModel>();
+                var initWindow = _host.Services.GetRequiredService<InitializationWindow>();
+                initWindow.DataContext = initViewModel;
+
+                var dialogResult = initWindow.ShowDialog();
+
+                if (dialogResult == true)
                 {
+                    var mainViewModel = _host.Services.GetRequiredService<MainViewModel>();
+
                     mainViewModel.Initialize(
                         initViewModel.GetWidth(),
                         initViewModel.GetHeight(),
@@ -55,16 +56,18 @@ namespace GameOfLife.WPF
 
                     mainWindow.WindowState = WindowState.Maximized;
                     mainWindow.Show();
+
+
                 }
-                catch (Exception ex)
+                else
                 {
-                    MessageBox.Show($"Initialization Error: {ex.Message}", "Error",
-                        MessageBoxButton.OK, MessageBoxImage.Error);
                     Shutdown();
                 }
             }
-            else
+            catch (Exception ex)
             {
+                MessageBox.Show($"Initialization Error: {ex.Message}", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
                 Shutdown();
             }
         }

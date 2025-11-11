@@ -48,7 +48,7 @@ namespace GameOfLife.WPF.ViewModels
         public void Initialize(int width, int height)
         {
             _board.Initialize(width, height);
-            Randomize(0.5);
+            Randomize(0.4);
         }
 
         public void UpdateZoom(double delta)
