@@ -56,8 +56,6 @@ namespace GameOfLife.WPF
 
                     mainWindow.WindowState = WindowState.Maximized;
                     mainWindow.Show();
-
-
                 }
                 else
                 {

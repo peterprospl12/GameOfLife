@@ -51,6 +51,20 @@ namespace GameOfLife.WPF.ViewModels
             Randomize(0.4);
         }
 
+        public void SetInitialZoom(double viewWidth, double viewHeight, int cellSize)
+        {
+            if (Width > 0 && Height > 0)
+            {
+                var boardPixelWidth = Width * cellSize;
+                var boardPixelHeight = Height * cellSize;
+
+                var zoomX = viewWidth / boardPixelWidth;
+                var zoomY = viewHeight / boardPixelHeight;
+
+                ZoomLevel = Math.Min(zoomX, zoomY);
+            }
+        }
+
         public void UpdateZoom(double delta)
         {
             if (delta > 0)
@@ -85,8 +99,8 @@ namespace GameOfLife.WPF.ViewModels
 
         public BitmapSource CreateBitmap(int cellSize)
         {
-            int imageWidth = Width * cellSize;
-            int imageHeight = Height * cellSize;
+            var imageWidth = Width * cellSize;
+            var imageHeight = Height * cellSize;
 
             var drawingVisual = new DrawingVisual();
             using (DrawingContext dc = drawingVisual.RenderOpen())
@@ -117,6 +131,8 @@ namespace GameOfLife.WPF.ViewModels
                             streamGeometry.Freeze();
                             dc.DrawGeometry(aliveBrush, null, streamGeometry);
                             break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
                     }
                 }
             }

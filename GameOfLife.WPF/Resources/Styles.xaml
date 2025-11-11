@@ -8,7 +8,7 @@
             </Trigger>
         </Style.Triggers>
     </Style>
-    <!-- For rectangles in cells -->
+
     <Style TargetType="Rectangle" x:Key="CellStyle">
         <Setter Property="Fill" Value="Black"/>
         <Style.Triggers>

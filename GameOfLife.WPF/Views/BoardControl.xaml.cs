@@ -23,6 +23,7 @@ namespace GameOfLife.WPF.Views
 
         private bool _isPanning;
         private System.Windows.Point _panLastPoint;
+        private bool _initialZoomSet;
 
         public BoardControl()
         {
@@ -76,6 +77,16 @@ namespace GameOfLife.WPF.Views
 
                 InitializeBitmap();
                 _redrawTimer.Start();
+                _initialZoomSet = false;
+            }
+        }
+
+        private void OnScrollViewerSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (_viewModel != null && !_initialZoomSet && e.NewSize.Width > 0 && e.NewSize.Height > 0)
+            {
+                _viewModel.SetInitialZoom(e.NewSize.Width, e.NewSize.Height, _cellSize);
+                _initialZoomSet = true;
             }
         }
 
@@ -180,6 +191,8 @@ namespace GameOfLife.WPF.Views
         private void OnMouseWheel(object sender, MouseWheelEventArgs e)
         {
             var oldZoom = _viewModel.ZoomLevel;
+            if (oldZoom == 0) return; 
+
             _viewModel.UpdateZoom(e.Delta);
 
             var mousePos = e.GetPosition(ScrollViewer);
@@ -188,8 +201,11 @@ namespace GameOfLife.WPF.Views
             var newOffsetX = (ScrollViewer.HorizontalOffset + mousePos.X) * (newZoom / oldZoom) - mousePos.X;
             var newOffsetY = (ScrollViewer.VerticalOffset + mousePos.Y) * (newZoom / oldZoom) - mousePos.Y;
 
-            ScrollViewer.ScrollToHorizontalOffset(newOffsetX);
-            ScrollViewer.ScrollToVerticalOffset(newOffsetY);
+            if (!double.IsNaN(newOffsetX) && !double.IsNaN(newOffsetY))
+            {
+                ScrollViewer.ScrollToHorizontalOffset(newOffsetX);
+                ScrollViewer.ScrollToVerticalOffset(newOffsetY);
+            }
 
             e.Handled = true;
         }

@@ -32,11 +32,6 @@ namespace GameOfLife.Core.Models
             }
         }
 
-        public bool IsAlive(Point point)
-        {
-            return Cells.Contains(point);
-        }
-
         public void SetCell(Point point, CellState state)
         {
             var wrappedPoint = GetWrappedPoint(point);
@@ -77,16 +72,6 @@ namespace GameOfLife.Core.Models
         public IEnumerable<Point> GetAliveCells()
         {
             return Cells;
-        }
-
-        public void LoadFromFile(string filePath, Rules rules)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SaveToFile(string filePath, Rules rules)
-        {
-            throw new NotImplementedException();
         }
 
         public CellState GetCellState(Point point)

@@ -15,7 +15,8 @@
                       PreviewMouseWheel="OnMouseWheel"
                       PreviewMouseDown="OnPanMouseDown"
                       PreviewMouseMove="OnPanMouseMove"
-                      PreviewMouseUp="OnPanMouseUp">
+                      PreviewMouseUp="OnPanMouseUp"
+                      SizeChanged="OnScrollViewerSizeChanged">
             <Image x:Name="BoardImage" 
                    Stretch="None"
                    RenderOptions.BitmapScalingMode="NearestNeighbor"

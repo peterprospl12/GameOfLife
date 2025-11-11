@@ -34,7 +34,7 @@ namespace GameOfLife.WPF.ViewModels
 
         public IEnumerable GetErrors(string? propertyName)
         {
-            return _errors.GetValueOrDefault(propertyName ?? string.Empty, new List<string>());
+            return _errors.GetValueOrDefault(propertyName ?? string.Empty, []);
         }
 
         private void ValidateProperty(string value, string propertyName)
@@ -52,7 +52,7 @@ namespace GameOfLife.WPF.ViewModels
         {
             if (!_errors.ContainsKey(propertyName))
             {
-                _errors[propertyName] = new List<string>();
+                _errors[propertyName] = [];
             }
 
             if (!_errors[propertyName].Contains(error))
