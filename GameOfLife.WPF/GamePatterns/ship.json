@@ -1,0 +1,150 @@
+{
+  "RuleString": "B3/S23",
+  "Generation": 0,
+  "TotalBorn": 0,
+  "TotalDied": 0,
+  "Width": 100,
+  "Height": 100,
+  "AliveCells": [
+    {
+      "IsEmpty": false,
+      "X": 39,
+      "Y": 47
+    },
+    {
+      "IsEmpty": false,
+      "X": 39,
+      "Y": 48
+    },
+    {
+      "IsEmpty": false,
+      "X": 39,
+      "Y": 49
+    },
+    {
+      "IsEmpty": false,
+      "X": 43,
+      "Y": 47
+    },
+    {
+      "IsEmpty": false,
+      "X": 43,
+      "Y": 48
+    },
+    {
+      "IsEmpty": false,
+      "X": 43,
+      "Y": 49
+    },
+    {
+      "IsEmpty": false,
+      "X": 47,
+      "Y": 48
+    },
+    {
+      "IsEmpty": false,
+      "X": 47,
+      "Y": 49
+    },
+    {
+      "IsEmpty": false,
+      "X": 51,
+      "Y": 47
+    },
+    {
+      "IsEmpty": false,
+      "X": 51,
+      "Y": 48
+    },
+    {
+      "IsEmpty": false,
+      "X": 47,
+      "Y": 47
+    },
+    {
+      "IsEmpty": false,
+      "X": 51,
+      "Y": 49
+    },
+    {
+      "IsEmpty": false,
+      "X": 55,
+      "Y": 47
+    },
+    {
+      "IsEmpty": false,
+      "X": 39,
+      "Y": 45
+    },
+    {
+      "IsEmpty": false,
+      "X": 55,
+      "Y": 48
+    },
+    {
+      "IsEmpty": false,
+      "X": 38,
+      "Y": 45
+    },
+    {
+      "IsEmpty": false,
+      "X": 55,
+      "Y": 49
+    },
+    {
+      "IsEmpty": false,
+      "X": 42,
+      "Y": 42
+    },
+    {
+      "IsEmpty": false,
+      "X": 42,
+      "Y": 43
+    },
+    {
+      "IsEmpty": false,
+      "X": 42,
+      "Y": 41
+    },
+    {
+      "IsEmpty": false,
+      "X": 41,
+      "Y": 44
+    },
+    {
+      "IsEmpty": false,
+      "X": 40,
+      "Y": 41
+    },
+    {
+      "IsEmpty": false,
+      "X": 36,
+      "Y": 44
+    },
+    {
+      "IsEmpty": false,
+      "X": 36,
+      "Y": 42
+    },
+    {
+      "IsEmpty": false,
+      "X": 41,
+      "Y": 41
+    },
+    {
+      "IsEmpty": false,
+      "X": 39,
+      "Y": 41
+    },
+    {
+      "IsEmpty": false,
+      "X": 37,
+      "Y": 41
+    },
+    {
+      "IsEmpty": false,
+      "X": 38,
+      "Y": 41
+    }
+  ]
+}

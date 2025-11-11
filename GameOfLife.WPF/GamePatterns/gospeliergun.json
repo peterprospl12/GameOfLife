@@ -1,0 +1,190 @@
+{
+  "RuleString": "B3/S23",
+  "Generation": 0,
+  "TotalBorn": 0,
+  "TotalDied": 0,
+  "Width": 100,
+  "Height": 100,
+  "AliveCells": [
+    {
+      "IsEmpty": false,
+      "X": 17,
+      "Y": 52
+    },
+    {
+      "IsEmpty": false,
+      "X": 17,
+      "Y": 53
+    },
+    {
+      "IsEmpty": false,
+      "X": 18,
+      "Y": 53
+    },
+    {
+      "IsEmpty": false,
+      "X": 18,
+      "Y": 52
+    },
+    {
+      "IsEmpty": false,
+      "X": 27,
+      "Y": 54
+    },
+    {
+      "IsEmpty": false,
+      "X": 29,
+      "Y": 56
+    },
+    {
+      "IsEmpty": false,
+      "X": 27,
+      "Y": 53
+    },
+    {
+      "IsEmpty": false,
+      "X": 28,
+      "Y": 55
+    },
+    {
+      "IsEmpty": false,
+      "X": 33,
+      "Y": 54
+    },
+    {
+      "IsEmpty": false,
+      "X": 30,
+      "Y": 56
+    },
+    {
+      "IsEmpty": false,
+      "X": 32,
+      "Y": 55
+    },
+    {
+      "IsEmpty": false,
+      "X": 27,
+      "Y": 52
+    },
+    {
+      "IsEmpty": false,
+      "X": 33,
+      "Y": 53
+    },
+    {
+      "IsEmpty": false,
+      "X": 33,
+      "Y": 52
+    },
+    {
+      "IsEmpty": false,
+      "X": 34,
+      "Y": 53
+    },
+    {
+      "IsEmpty": false,
+      "X": 32,
+      "Y": 51
+    },
+    {
+      "IsEmpty": false,
+      "X": 31,
+      "Y": 53
+    },
+    {
+      "IsEmpty": false,
+      "X": 29,
+      "Y": 50
+    },
+    {
+      "IsEmpty": false,
+      "X": 30,
+      "Y": 50
+    },
+    {
+      "IsEmpty": false,
+      "X": 28,
+      "Y": 51
+    },
+    {
+      "IsEmpty": false,
+      "X": 37,
+      "Y": 52
+    },
+    {
+      "IsEmpty": false,
+      "X": 38,
+      "Y": 52
+    },
+    {
+      "IsEmpty": false,
+      "X": 37,
+      "Y": 51
+    },
+    {
+      "IsEmpty": false,
+      "X": 38,
+      "Y": 51
+    },
+    {
+      "IsEmpty": false,
+      "X": 38,
+      "Y": 50
+    },
+    {
+      "IsEmpty": false,
+      "X": 37,
+      "Y": 50
+    },
+    {
+      "IsEmpty": false,
+      "X": 39,
+      "Y": 49
+    },
+    {
+      "IsEmpty": false,
+      "X": 39,
+      "Y": 53
+    },
+    {
+      "IsEmpty": false,
+      "X": 41,
+      "Y": 53
+    },
+    {
+      "IsEmpty": false,
+      "X": 41,
+      "Y": 54
+    },
+    {
+      "IsEmpty": false,
+      "X": 41,
+      "Y": 49
+    },
+    {
+      "IsEmpty": false,
+      "X": 41,
+      "Y": 48
+    },
+    {
+      "IsEmpty": false,
+      "X": 51,
+      "Y": 51
+    },
+    {
+      "IsEmpty": false,
+      "X": 52,
+      "Y": 51
+    },
+    {
+      "IsEmpty": false,
+      "X": 51,
+      "Y": 50
+    },
+    {
+      "IsEmpty": false,
+      "X": 52,
+      "Y": 50
+    }
+  ]
+}
